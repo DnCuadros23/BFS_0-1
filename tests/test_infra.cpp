@@ -18,7 +18,6 @@ int main() {
 
     // Simula initBFS01(0): la fuente arranca en dist 0
     dist[0] = 0;
-    visited[0] = true;
     dq.push_front(0);
     emit("init", "Nodo 0 es la fuente", 0);
 

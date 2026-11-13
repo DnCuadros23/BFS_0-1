@@ -36,12 +36,14 @@ BFS_0-1/
 ├── src/bfs01/
 │   ├── graph_core.cpp          # buildGraph() + emit() — Persona 0
 │   ├── init.cpp                # initBFS01() — Persona 1 ✅
-│   └── bfs01.cpp               # bfs01() — Persona 2 (por hacer)
+│   └── bfs01.cpp               # bfs01() — Persona 2 ✅
 ├── src/
 │   ├── demo_cases.cpp          # Grafo de ejemplo + caso borde — Persona 3 (por hacer)
 │   └── main.cpp                # Integra todo — Persona 3 (por hacer)
 ├── tests/
-│   └── test_infra.cpp          # Prueba aislada de buildGraph()/emit()
+│   ├── test_infra.cpp          # Prueba aislada de buildGraph()/emit()
+│   ├── test_init.cpp           # Prueba de initBFS01()
+│   └── test_bfs01.cpp          # Prueba del algoritmo completo + casos borde
 ├── animation/
 │   └── render_bfs01.py         # Script Manim — Persona 3 (por hacer)
 ├── CMakeLists.txt              # Instrucciones para compilar
@@ -96,14 +98,14 @@ BFS normal no funciona con pesos 0/1, representación del grafo.
 
 ---
 
-### ⏳ Por Hacer (Persona 2 — `feature/bfs01-algoritmo`)
+### ✅ Listo (Persona 2 — `feature/bfs01-algoritmo`)
 
 **`src/bfs01/bfs01.cpp`**:
-- [ ] `bfs01(source)`: llama a `initBFS01(source)` y corre el `while` principal:
+- [x] `bfs01(source)`: llama a `initBFS01(source)` y corre el `while` principal:
       `pop_front` del deque, marcar `visited`, relajar cada arista saliente
       (si mejora `dist[v]`, actualizar y hacer `push_front` si peso 0 /
       `push_back` si peso 1).
-- [ ] Usar `emit()` en cada paso relevante (pop, relax, descarte de nodo
+- [x] Usar `emit()` en cada paso relevante (pop, relax, descarte de nodo
       ya visitado).
 - [ ] En el video: demo animada del algoritmo paso a paso (~45-50s).
 
@@ -121,8 +123,8 @@ BFS normal no funciona con pesos 0/1, representación del grafo.
 
 **`animation/render_bfs01.py`**:
 - [ ] Adaptar el script de Manim (o escribir uno nuevo) para leer
-      `trace.jsonl` con el nuevo formato (nodos con `dist`/`visited` + deque,
-      ya no es un árbol con padres/hijos).
+      `trace.jsonl`: dibujar el grafo con el evento `graph`, resaltar la
+      arista de `edge` y animar la entrada al deque según `side`.
 - [ ] Resaltar `current_node` y mostrar `note` como subtítulo.
 - [ ] Exportar a video `.mp4`.
 - [ ] En el video: caso borde + análisis de complejidad (BFS 0-1 O(V+E) vs.
@@ -170,8 +172,24 @@ Una línea JSON por evento. Cada línea tiene: el evento, una nota en texto
 (`dist`/`visited`) y el contenido actual del deque.
 
 ```json
-{"event":"init","note":"Nodo 0 marcado como fuente, dist=0","current_node":0,"nodes":[{"id":0,"dist":0,"visited":true},{"id":1,"dist":-1,"visited":false},{"id":2,"dist":-1,"visited":false},{"id":3,"dist":-1,"visited":false}],"deque":[0]}
+{"event":"graph","name":"ejemplo","n":3,"edges":[{"u":0,"v":1,"w":0},{"u":1,"v":2,"w":1}]}
+{"event":"init","note":"Nodo 0 es la fuente, dist = 0","current_node":0,"edge":null,"side":"","nodes":[{"id":0,"dist":0,"visited":false},{"id":1,"dist":-1,"visited":false},{"id":2,"dist":-1,"visited":false}],"deque":[0]}
+{"event":"relax","note":"Arista 0->1 (peso 0): dist[1] = 0, entra por el frente","current_node":1,"edge":{"u":0,"v":1,"w":0},"side":"front","nodes":[{"id":0,"dist":0,"visited":true},{"id":1,"dist":0,"visited":false},{"id":2,"dist":-1,"visited":false}],"deque":[1]}
 ```
+
+Eventos:
+
+| Evento | Significado |
+|---|---|
+| `graph` | Nuevo grafo (aristas y pesos). Separa escenas: ejemplo, caso borde, etc. |
+| `init` | La fuente entra al deque con `dist = 0` |
+| `pop` | Sale un nodo del frente del deque y se marca `visited` |
+| `relax` | Una arista mejora `dist[v]`; `side` indica si `v` entró por `front` (peso 0) o `back` (peso 1) |
+| `keep` | Se revisa una arista pero no mejora la distancia |
+| `skip` | Sale un nodo que ya fue procesado y se descarta |
+| `done` | El deque quedó vacío: distancias finales |
+
+`visited` se marca al **sacar** el nodo del deque, no al meterlo.
 
 Manim procesa esto línea por línea y anima las transiciones (nodo que entra
 al deque por el frente o por atrás, cambios de color al visitarse, etc.).

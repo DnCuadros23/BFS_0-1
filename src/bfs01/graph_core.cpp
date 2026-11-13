@@ -1,4 +1,4 @@
-#include "../../include/bfs01/bfs01.h"
+#include "bfs01/bfs01.h"
 #include <fstream>
 #include <sstream>
 
@@ -9,7 +9,21 @@ vector<long long> dist;
 vector<bool> visited;
 deque<int> dq;
 
-void buildGraph(int n, vector<tuple<int, int, int>> edges) {
+static ofstream& traceFile() {
+    static ofstream trace_file("trace.jsonl");
+    return trace_file;
+}
+
+static string escapeJson(const string& s) {
+    string out;
+    for (char c : s) {
+        if (c == '"' || c == '\\') out += '\\';
+        out += c;
+    }
+    return out;
+}
+
+void buildGraph(int n, vector<tuple<int, int, int>> edges, const string& name) {
     adj.assign(n, {});
     dist.assign(n, -1);
     visited.assign(n, false);
@@ -18,11 +32,21 @@ void buildGraph(int n, vector<tuple<int, int, int>> edges) {
     for (auto& [u, v, w] : edges) {
         adj[u].push_back({v, w});
     }
+
+    stringstream line;
+    line << "{\"event\":\"graph\",\"name\":\"" << escapeJson(name) << "\",\"n\":" << n << ",\"edges\":[";
+    for (int i = 0; i < (int)edges.size(); i++) {
+        auto& [u, v, w] = edges[i];
+        if (i > 0) line << ",";
+        line << "{\"u\":" << u << ",\"v\":" << v << ",\"w\":" << w << "}";
+    }
+    line << "]}";
+    traceFile() << line.str() << "\n";
+    traceFile().flush();
 }
 
-void emit(const string& event, const string& note, int currentNode) {
-    static ofstream trace_file("trace.jsonl");
-
+void emit(const string& event, const string& note, int currentNode,
+          int edgeU, int edgeV, int weight, const string& side) {
     // Snapshot de todos los nodos (dist + visited)
     stringstream nodes;
     nodes << "[";
@@ -44,14 +68,18 @@ void emit(const string& event, const string& note, int currentNode) {
 
     // Armar la linea completa en JSON
     string json_line = "{";
-    json_line += "\"event\":\"" + event + "\",";
-    json_line += "\"note\":\"" + note + "\",";
+    json_line += "\"event\":\"" + escapeJson(event) + "\",";
+    json_line += "\"note\":\"" + escapeJson(note) + "\",";
     json_line += "\"current_node\":" + to_string(currentNode) + ",";
+    json_line += "\"edge\":";
+    if (edgeU == -1) json_line += "null,";
+    else json_line += "{\"u\":" + to_string(edgeU) + ",\"v\":" + to_string(edgeV) + ",\"w\":" + to_string(weight) + "},";
+    json_line += "\"side\":\"" + side + "\",";
     json_line += "\"nodes\":" + nodes.str() + ",";
     json_line += "\"deque\":" + deq.str();
     json_line += "}";
 
     // Escribir la linea en el archivo (una linea por evento)
-    trace_file << json_line << "\n";
-    trace_file.flush();
+    traceFile() << json_line << "\n";
+    traceFile().flush();
 }
