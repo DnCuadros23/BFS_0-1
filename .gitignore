@@ -4,3 +4,4 @@ cmake-build-*/
 *.obj
 *.exe
 trace.jsonl
+.idea/
