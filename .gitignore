@@ -7,3 +7,6 @@ trace.jsonl
 .idea/
 media/
 __pycache__/
+
+# El informe y el guion se guardan fuera del repo
+informe/

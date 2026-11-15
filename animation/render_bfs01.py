@@ -3,6 +3,7 @@ Animacion de BFS 0-1 con Manim, impulsada por trace.jsonl (generado por bfs01_de
 
 Uso (desde la raiz del repo, despues de correr ./build/bfs01_demo):
     manim -qm animation/render_bfs01.py BFS01Video          # video completo
+    manim -qm animation/render_bfs01.py IntroScene          # solo la introduccion
     manim -qm animation/render_bfs01.py EjemploScene        # solo el grafo de ejemplo
     manim -qm animation/render_bfs01.py CasoBordeScene      # solo los casos borde
     manim -qm animation/render_bfs01.py ComplejidadScene
@@ -338,6 +339,105 @@ class BFS01Base(Scene):
 
 # ---------------------------------------------------------------- escenas
 
+class IntroScene(BFS01Base):
+    """Introduccion conceptual: que problema resuelve BFS 0-1 y la idea del deque."""
+
+    def construct(self):
+        # 1. Titulo
+        titulo = T("BFS 0-1", 72)
+        sub = T("Caminos minimos en grafos con pesos 0 y 1", 30, color=GRAY)
+        curso = T(CURSO, 20, color=GRAY)
+        VGroup(titulo, sub).arrange(DOWN, buff=0.35)
+        curso.to_edge(DOWN, buff=0.6)
+        self.play(Write(titulo), run_time=1.2)
+        self.play(FadeIn(sub, shift=UP * 0.2), FadeIn(curso))
+        self.wait(2)
+        self.play(*[FadeOut(m) for m in self.mobjects])
+
+        # 2. El problema: BFS normal cuenta aristas, no pesos
+        cab = self.titulo("El problema", "grafo dirigido, cada arista pesa 0 o 1: camino mas barato desde s")
+        self.play(FadeIn(cab, shift=DOWN * 0.3))
+        ps, pa, pb = LEFT * 3.5 + UP * 0.3, RIGHT * 2.5 + UP * 0.3, LEFT * 0.5 + DOWN * 1.7
+        nodos = {k: VGroup(Circle(radius=NODE_R, color=WHITE).set_fill(GRAY, 0.25).move_to(p), T(k, 28).move_to(p))
+                 for k, p in (("s", ps), ("a", pa), ("b", pb))}
+
+        def flecha(p1, p2, w):
+            color = COLOR_W0 if w == 0 else COLOR_W1
+            f = Arrow(p1, p2, buff=NODE_R, color=color, stroke_width=4)
+            etiqueta = T(str(w), 24, color=color).move_to(f.get_center() + UP * 0.3)
+            return VGroup(f, etiqueta)
+
+        sa, sb, ba = flecha(ps, pa, 1), flecha(ps, pb, 0), flecha(pb, pa, 0)
+        self.play(*[Create(n) for n in nodos.values()])
+        self.play(Create(sa), Create(sb), Create(ba))
+        self.wait(0.5)
+
+        bfs = T("BFS normal: s -> a usa 1 arista  =>  dist[a] = 1", 26, color=COLOR_W1).move_to(DOWN * 2.9)
+        self.play(sa.animate.set_color(YELLOW), Write(bfs))
+        self.wait(1.5)
+        tacha = Line(bfs.get_left(), bfs.get_right(), color=RED, stroke_width=5)
+        real = T("Pero s -> b -> a cuesta 0 + 0 = 0  =>  dist[a] = 0", 26, color=COLOR_W0).move_to(DOWN * 2.9)
+        self.play(Create(tacha))
+        self.play(sa.animate.set_color(COLOR_W1), sb.animate.set_color(YELLOW), ba.animate.set_color(YELLOW),
+                  FadeOut(bfs), FadeOut(tacha), Write(real))
+        self.wait(2)
+        self.play(*[FadeOut(m) for m in self.mobjects])
+
+        # 3. Tres opciones
+        cab = self.titulo("Que algoritmo usar?")
+        self.play(FadeIn(cab, shift=DOWN * 0.3))
+
+        def opcion(nombre, costo, nota, color):
+            return VGroup(T(nombre, 32, color=color), T(costo, 30), T(nota, 20, color=GRAY)).arrange(DOWN, buff=0.15)
+
+        ops = VGroup(opcion("BFS", "O(V + E)", "no ve los pesos", RED),
+                     opcion("Dijkstra", "O((V + E) log V)", "correcto, pero necesita un heap", ORANGE),
+                     opcion("BFS 0-1", "O(V + E)", "correcto y sin heap", GREEN)).arrange(RIGHT, buff=0.9)
+        for o in ops:
+            self.play(FadeIn(o, shift=UP * 0.2), run_time=0.6)
+            self.wait(0.8)
+        self.play(Indicate(ops[2], color=GREEN))
+        self.wait(1)
+        self.play(*[FadeOut(m) for m in self.mobjects])
+
+        # 4. La idea: un deque en vez de una cola
+        cab = self.titulo("La idea: una cola doble (deque)", "se saca siempre por el frente")
+        self.play(FadeIn(cab, shift=DOWN * 0.3))
+        cajas = VGroup(*[VGroup(Square(0.8, color=COLOR_EN_DEQUE), T(t, 26)) for t in ("d", "d", "d+1", "d+1")])
+        cajas.arrange(RIGHT, buff=0.1)
+        for c in cajas:
+            c[1].move_to(c[0])
+        cajas.move_to(UP * 0.2)
+        frente = T("frente", 22, color=COLOR_W0).next_to(cajas, LEFT, buff=0.3)
+        atras = T("atras", 22, color=COLOR_W1).next_to(cajas, RIGHT, buff=0.3)
+        self.play(FadeIn(cajas), FadeIn(frente), FadeIn(atras))
+        r0 = T("arista de peso 0  ->  push_front  (misma distancia)", 26, color=COLOR_W0)
+        r1 = T("arista de peso 1  ->  push_back  (distancia + 1)", 26, color=COLOR_W1)
+        inv = T("El deque queda ordenado por distancia sin ordenar nada", 26, color=YELLOW)
+        VGroup(r0, r1, inv).arrange(DOWN, buff=0.3).move_to(DOWN * 2.0)
+        self.play(Write(r0))
+        self.play(Indicate(frente, color=COLOR_W0))
+        self.wait(0.8)
+        self.play(Write(r1))
+        self.play(Indicate(atras, color=COLOR_W1))
+        self.wait(0.8)
+        self.play(Write(inv))
+        self.wait(2)
+        self.play(*[FadeOut(m) for m in self.mobjects])
+
+        # 5. Representacion y usos
+        cab = self.titulo("Representacion del grafo")
+        self.play(FadeIn(cab, shift=DOWN * 0.3))
+        rep = VGroup(T("Lista de adyacencia dirigida:  adj[u] = { (v, peso), ... }", 28),
+                     T("dist[v] = -1 significa infinito (aun no alcanzado)", 24, color=GRAY),
+                     T("Usos: grillas donde romper una pared cuesta 1,", 24, color=GRAY),
+                     T("o estados donde cambiar de direccion cuesta 1 y avanzar 0", 24, color=GRAY)
+                     ).arrange(DOWN, buff=0.3)
+        self.play(LaggedStart(*[FadeIn(r, shift=UP * 0.2) for r in rep], lag_ratio=0.4), run_time=2)
+        self.wait(2.5)
+        self.play(*[FadeOut(m) for m in self.mobjects])
+
+
 class EjemploScene(BFS01Base):
     def construct(self):
         g, evs = escena("ejemplo")
@@ -405,8 +505,8 @@ class CreditosScene(BFS01Base):
 
 
 class BFS01Video(BFS01Base):
-    """Video completo: ejemplo -> casos borde -> complejidad -> creditos."""
+    """Video completo: intro -> ejemplo -> casos borde -> complejidad -> creditos."""
 
     def construct(self):
-        for cls in (EjemploScene, CasoBordeScene, ComplejidadScene, CreditosScene):
+        for cls in (IntroScene, EjemploScene, CasoBordeScene, ComplejidadScene, CreditosScene):
             cls.construct(self)

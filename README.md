@@ -93,8 +93,11 @@ BFS_0-1/
 - `tests/test_init.cpp`: prueba aislada (no depende de `bfs01()`, que
   todavía no existe).
 
-⏳ Falta grabar: intro conceptual (~30s) — para qué sirve BFS 0-1, por qué
-BFS normal no funciona con pesos 0/1, representación del grafo.
+✅ Escena `IntroScene` en `animation/render_bfs01.py` (~47s): título, por qué
+BFS normal no funciona con pesos 0/1, comparación con Dijkstra, la idea del
+deque y la representación del grafo.
+
+⏳ Falta grabar la voz en off de la intro.
 
 ---
 
@@ -131,7 +134,7 @@ BFS normal no funciona con pesos 0/1, representación del grafo.
       anima la entrada al deque por el frente o por atrás según `side`.
 - [x] Muestra `note` como subtítulo y `dist` debajo/encima de cada nodo.
 - [x] Escenas de casos borde, análisis de complejidad y créditos.
-- [x] Exporta a `.mp4` (`BFS01Video` = video completo, ~1:55).
+- [x] Exporta a `.mp4` (`BFS01Video` = video completo, ~2:40 con la intro).
 - [ ] En el video: caso borde + análisis de complejidad + créditos (~35s).
 
 ---
@@ -186,7 +189,7 @@ manim -qh animation/render_bfs01.py BFS01Video
 
 El video queda en `media/videos/render_bfs01/1080p60/BFS01Video.mp4`. Usa
 `-ql` para una prueba rápida. También se puede renderizar una sola parte:
-`EjemploScene`, `CasoBordeScene`, `ComplejidadScene` o `CreditosScene`. El
+`IntroScene`, `EjemploScene`, `CasoBordeScene`, `ComplejidadScene` o `CreditosScene`. El
 script busca el trace en `$BFS01_TRACE`, `./trace.jsonl` o `./build/trace.jsonl`.
 
 ---
@@ -261,31 +264,32 @@ terceros (stdlib, librería de grafos), o falsificar los eventos.
 ## Checklist Antes de Gradescope
 
 ### Código
-- [ ] Compila sin errores ni warnings
-- [ ] `trace.jsonl` se genera correctamente
-- [ ] Se ejecuta sin crashes
-- [ ] Repositorio GitHub actualizado
-- [ ] README.md con instrucciones funcionales
+- [x] Compila sin errores ni warnings
+- [x] `trace.jsonl` se genera correctamente
+- [x] Se ejecuta sin crashes
+- [x] Repositorio GitHub actualizado
+- [x] README.md con instrucciones funcionales
 
 ### Video
-- [ ] Duración: 1-2 minutos (máx 5)
-- [ ] Incluye intro conceptual
-- [ ] Muestra la ejecución animada sobre el grafo de ejemplo
-- [ ] Incluye al menos un caso borde
-- [ ] Incluye análisis de complejidad
-- [ ] Tiene créditos con nombres
-- [ ] Formato: .mp4 (o link si pesa mucho)
+- [x] Duración: 1-2 minutos (máx 5) — queda en ~2:40
+- [x] Incluye intro conceptual
+- [x] Muestra la ejecución animada sobre el grafo de ejemplo
+- [x] Incluye al menos un caso borde
+- [x] Incluye análisis de complejidad
+- [x] Tiene créditos con nombres
+- [x] Formato: .mp4 (o link si pesa mucho)
+- [ ] Voz en off grabada y montada
 
 ### Informe PDF
-- [ ] Carátula (curso, nombres, fecha)
-- [ ] Descripción del algoritmo
-- [ ] Herramientas usadas
-- [ ] Pasos para compilar y ejecutar
-- [ ] Contribución de cada integrante
-- [ ] Análisis de complejidad
-- [ ] Link a GitHub (funciona ✓)
+- [x] Carátula (curso, nombres, fecha)
+- [x] Descripción del algoritmo
+- [x] Herramientas usadas
+- [x] Pasos para compilar y ejecutar
+- [ ] Contribución de cada integrante (se quitó del informe; confirmar con el grupo)
+- [x] Análisis de complejidad
+- [x] Link a GitHub (funciona ✓)
 - [ ] Link a video (funciona ✓)
-- [ ] 2+ conclusiones escritas
+- [x] 2+ conclusiones escritas
 
 ### Entrega
 - [ ] Solo una persona sube a Gradescope
