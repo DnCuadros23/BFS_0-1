@@ -84,7 +84,7 @@ BFS_0-1/
   para confirmar que `buildGraph()` y `emit()` generan el `trace.jsonl`
   esperado.
 
-### ✅ Listo (Persona 1 — `feature/init`)
+### ✅ Listo (Persona 1: Denilson Cuadros — `feature/init`)
 
 **`src/bfs01/init.cpp`**:
 - `initBFS01(source)`: `dist[source] = 0` y `dq.push_front(source)`.
@@ -98,7 +98,7 @@ BFS normal no funciona con pesos 0/1, representación del grafo.
 
 ---
 
-### ✅ Listo (Persona 2 — `feature/bfs01-algoritmo`)
+### ✅ Listo (Persona 2: Jobeth Alexander Leon — `feature/bfs01-algoritmo`)
 
 **`src/bfs01/bfs01.cpp`**:
 - [x] `bfs01(source)`: llama a `initBFS01(source)` y corre el `while` principal:
@@ -111,7 +111,7 @@ BFS normal no funciona con pesos 0/1, representación del grafo.
 
 ---
 
-### ✅ Listo (Persona 3 — `feature/casos-integracion`)
+### ✅ Listo (Persona 3: Benjamin Toro — `feature/casos-integracion`)
 
 **`src/demo_cases.cpp` + `src/main.cpp`**:
 - [x] Grafo de ejemplo (6 nodos, 8 aristas): la ruta `0 -0-> 2 -0-> 1` le gana
@@ -226,10 +226,10 @@ al deque por el frente o por atrás, cambios de color al visitarse, etc.).
 
 | Parte | Persona | Archivo(s) | Explica en el video |
 |---|---|---|---|
-| 0. Infraestructura | Denilson | `bfs01.h`, `graph_core.cpp`, `CMakeLists.txt` ✅ | — |
-| 1. Inicialización + intro | Persona 1 | `init.cpp` | Intro conceptual (~30s) |
-| 2. Algoritmo central | Persona 2 | `bfs01.cpp` | Demo animada paso a paso (~45-50s) |
-| 3. Casos + integración | Persona 3 | `demo_cases.cpp`, `main.cpp`, `render_bfs01.py` | Caso borde + complejidad + créditos (~35s) |
+| 0. Infraestructura | Denilson Cuadros | `bfs01.h`, `graph_core.cpp`, `CMakeLists.txt` ✅ | — |
+| 1. Inicialización + intro | Denilson Cuadros | `init.cpp` | Intro conceptual (~30s) |
+| 2. Algoritmo central | Jobeth Alexander Leon | `bfs01.cpp` | Demo animada paso a paso (~45-50s) |
+| 3. Casos + integración | Benjamin Toro | `demo_cases.cpp`, `main.cpp`, `render_bfs01.py` | Caso borde + complejidad + créditos (~35s) |
 
 ---
 
