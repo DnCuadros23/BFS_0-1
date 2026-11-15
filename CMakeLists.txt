@@ -22,16 +22,18 @@ add_executable(test_init tests/test_init.cpp src/bfs01/graph_core.cpp src/bfs01/
 # Test del algoritmo completo (Persona 2)
 add_executable(test_bfs01 tests/test_bfs01.cpp ${BFS01_SOURCES})
 
-# Ejecutable final: se habilita cuando esten demo_cases.cpp y main.cpp
-# add_executable(bfs01_demo src/demo_cases.cpp src/main.cpp ${BFS01_SOURCES})
+# Ejecutable final: corre el algoritmo sobre el grafo de ejemplo y los casos borde
+add_executable(bfs01_demo src/demo_cases.cpp src/main.cpp ${BFS01_SOURCES})
 
 # Configuración de compilación
 if(MSVC)
     target_compile_options(test_infra PRIVATE /W4)
     target_compile_options(test_init PRIVATE /W4)
     target_compile_options(test_bfs01 PRIVATE /W4)
+    target_compile_options(bfs01_demo PRIVATE /W4)
 else()
     target_compile_options(test_infra PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(test_init PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(test_bfs01 PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(bfs01_demo PRIVATE -Wall -Wextra -Wpedantic)
 endif()
