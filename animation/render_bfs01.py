@@ -30,10 +30,9 @@ from manim import (
 # ---------------------------------------------------------------- configuracion
 
 CREDITOS = [
-    ("Infraestructura", "Denilson"),
-    ("Inicializacion + intro", "Persona 1"),
-    ("Algoritmo central", "Persona 2"),
-    ("Casos + integracion + animacion", "Persona 3"),
+    "Denilson Cuadros",
+    "Jobeth Alexander Leon",
+    "Benjamin Toro",
 ]
 CURSO = "CS2023 - Algoritmos y Estructuras de Datos - UTEC"
 
@@ -393,8 +392,7 @@ class ComplejidadScene(BFS01Base):
 class CreditosScene(BFS01Base):
     def construct(self):
         cab = self.titulo("Creditos")
-        filas = VGroup(*[VGroup(T(rol, 26, color=GRAY), T(nombre, 30)).arrange(RIGHT, buff=0.5)
-                         for rol, nombre in CREDITOS]).arrange(DOWN, buff=0.35)
+        filas = VGroup(*[T(nombre, 34) for nombre in CREDITOS]).arrange(DOWN, buff=0.4)
         curso = T(CURSO, 22, color=GRAY).to_edge(DOWN, buff=0.6)
         nota = T("Animacion generada a partir de trace.jsonl de nuestra implementacion en C++", 20,
                  color=GRAY).next_to(curso, UP, buff=0.2)

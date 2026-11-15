@@ -132,7 +132,6 @@ BFS normal no funciona con pesos 0/1, representación del grafo.
 - [x] Muestra `note` como subtítulo y `dist` debajo/encima de cada nodo.
 - [x] Escenas de casos borde, análisis de complejidad y créditos.
 - [x] Exporta a `.mp4` (`BFS01Video` = video completo, ~1:55).
-- [ ] Poner los nombres reales en `CREDITOS` (inicio del script).
 - [ ] En el video: caso borde + análisis de complejidad + créditos (~35s).
 
 ---
