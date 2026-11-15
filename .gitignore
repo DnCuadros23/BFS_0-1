@@ -5,3 +5,5 @@ cmake-build-*/
 *.exe
 trace.jsonl
 .idea/
+media/
+__pycache__/

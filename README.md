@@ -38,14 +38,14 @@ BFS_0-1/
 │   ├── init.cpp                # initBFS01() — Persona 1 ✅
 │   └── bfs01.cpp               # bfs01() — Persona 2 ✅
 ├── src/
-│   ├── demo_cases.cpp          # Grafo de ejemplo + caso borde — Persona 3 (por hacer)
-│   └── main.cpp                # Integra todo — Persona 3 (por hacer)
+│   ├── demo_cases.h/.cpp       # Grafo de ejemplo + casos borde — Persona 3 ✅
+│   └── main.cpp                # Integra todo — Persona 3 ✅
 ├── tests/
 │   ├── test_infra.cpp          # Prueba aislada de buildGraph()/emit()
 │   ├── test_init.cpp           # Prueba de initBFS01()
 │   └── test_bfs01.cpp          # Prueba del algoritmo completo + casos borde
 ├── animation/
-│   └── render_bfs01.py         # Script Manim — Persona 3 (por hacer)
+│   └── render_bfs01.py         # Script Manim — Persona 3 ✅
 ├── CMakeLists.txt              # Instrucciones para compilar
 ├── README.md                   # Este archivo
 └── trace.jsonl                 # Output: "película" del algoritmo (generado, no se versiona)
@@ -84,7 +84,7 @@ BFS_0-1/
   para confirmar que `buildGraph()` y `emit()` generan el `trace.jsonl`
   esperado.
 
-### ✅ Listo (Persona 1 — `feature/init`)
+### ✅ Listo (Persona 1: Denilson Cuadros — `feature/init`)
 
 **`src/bfs01/init.cpp`**:
 - `initBFS01(source)`: `dist[source] = 0` y `dq.push_front(source)`.
@@ -98,7 +98,7 @@ BFS normal no funciona con pesos 0/1, representación del grafo.
 
 ---
 
-### ✅ Listo (Persona 2 — `feature/bfs01-algoritmo`)
+### ✅ Listo (Persona 2: Jobeth Alexander Leon — `feature/bfs01-algoritmo`)
 
 **`src/bfs01/bfs01.cpp`**:
 - [x] `bfs01(source)`: llama a `initBFS01(source)` y corre el `while` principal:
@@ -111,24 +111,28 @@ BFS normal no funciona con pesos 0/1, representación del grafo.
 
 ---
 
-### ⏳ Por Hacer (Persona 3 — `feature/casos-integracion`)
+### ✅ Listo (Persona 3: Benjamin Toro — `feature/casos-integracion`)
 
 **`src/demo_cases.cpp` + `src/main.cpp`**:
-- [ ] Grafo de ejemplo ilustrativo (nodos + aristas + pesos a elegir).
-- [ ] Al menos un caso borde (nodo inalcanzable, un solo nodo, o todas las
-      aristas de peso 1).
-- [ ] `main()` que llama a `buildGraph()` + `bfs01()` sobre ambos grafos.
-- [ ] Habilitar el target `bfs01_demo` en `CMakeLists.txt` (descomentar las
-      líneas ya dejadas listas).
+- [x] Grafo de ejemplo (6 nodos, 8 aristas): la ruta `0 -0-> 2 -0-> 1` le gana
+      a `0 -1-> 1`, así que el nodo 1 entra dos veces al deque (`skip`), y hay
+      aristas que no mejoran (`keep`). Distancias: `0 0 0 1 1 2`.
+- [x] Caso borde **inalcanzable**: los nodos 3 y 4 quedan con `dist = -1` (∞).
+- [x] Caso borde **todas las aristas de peso 1**: el deque actúa como la cola
+      FIFO de un BFS normal.
+- [x] `main()` corre los 3 grafos con `buildGraph()` + `bfs01()` e imprime las
+      distancias.
+- [x] Target `bfs01_demo` habilitado en `CMakeLists.txt`.
 
 **`animation/render_bfs01.py`**:
-- [ ] Adaptar el script de Manim (o escribir uno nuevo) para leer
-      `trace.jsonl`: dibujar el grafo con el evento `graph`, resaltar la
-      arista de `edge` y animar la entrada al deque según `side`.
-- [ ] Resaltar `current_node` y mostrar `note` como subtítulo.
-- [ ] Exportar a video `.mp4`.
-- [ ] En el video: caso borde + análisis de complejidad (BFS 0-1 O(V+E) vs.
-      Dijkstra genérico O((V+E)·log V)) + créditos (~35s).
+- [x] Lee `trace.jsonl`; cada evento `graph` arma una escena (nodos, aristas
+      azules = peso 0, naranjas = peso 1).
+- [x] Resalta `current_node` (anillo rojo), la arista de `edge` (destello) y
+      anima la entrada al deque por el frente o por atrás según `side`.
+- [x] Muestra `note` como subtítulo y `dist` debajo/encima de cada nodo.
+- [x] Escenas de casos borde, análisis de complejidad y créditos.
+- [x] Exporta a `.mp4` (`BFS01Video` = video completo, ~1:55).
+- [ ] En el video: caso borde + análisis de complejidad + créditos (~35s).
 
 ---
 
@@ -159,9 +163,31 @@ cmake --build . --config Debug
 **Resultado esperado**: se genera `trace.jsonl` con 3 líneas JSON (una por
 cada llamada a `emit()` en la prueba).
 
-Cuando Persona 3 integre todo, el target `bfs01_demo` (ya dejado comentado en
-`CMakeLists.txt`) correrá el algoritmo real sobre el grafo de ejemplo y el
-caso borde.
+### Demo completa + video
+
+```bash
+cmake --build build
+./build/bfs01_demo          # escribe trace.jsonl en el directorio actual
+```
+
+Salida esperada:
+
+```
+[ejemplo] distancias: 0=0 1=0 2=0 3=1 4=1 5=2
+[inalcanzable] distancias: 0=0 1=1 2=1 3=inf 4=inf
+[todo peso 1] distancias: 0=0 1=1 2=1 3=2 4=3
+```
+
+Luego, desde la raíz del repo (requiere `pip install manim`):
+
+```bash
+manim -qh animation/render_bfs01.py BFS01Video
+```
+
+El video queda en `media/videos/render_bfs01/1080p60/BFS01Video.mp4`. Usa
+`-ql` para una prueba rápida. También se puede renderizar una sola parte:
+`EjemploScene`, `CasoBordeScene`, `ComplejidadScene` o `CreditosScene`. El
+script busca el trace en `$BFS01_TRACE`, `./trace.jsonl` o `./build/trace.jsonl`.
 
 ---
 
@@ -200,10 +226,10 @@ al deque por el frente o por atrás, cambios de color al visitarse, etc.).
 
 | Parte | Persona | Archivo(s) | Explica en el video |
 |---|---|---|---|
-| 0. Infraestructura | Denilson | `bfs01.h`, `graph_core.cpp`, `CMakeLists.txt` ✅ | — |
-| 1. Inicialización + intro | Persona 1 | `init.cpp` | Intro conceptual (~30s) |
-| 2. Algoritmo central | Persona 2 | `bfs01.cpp` | Demo animada paso a paso (~45-50s) |
-| 3. Casos + integración | Persona 3 | `demo_cases.cpp`, `main.cpp`, `render_bfs01.py` | Caso borde + complejidad + créditos (~35s) |
+| 0. Infraestructura | Denilson Cuadros | `bfs01.h`, `graph_core.cpp`, `CMakeLists.txt` ✅ | — |
+| 1. Inicialización + intro | Denilson Cuadros | `init.cpp` | Intro conceptual (~30s) |
+| 2. Algoritmo central | Jobeth Alexander Leon | `bfs01.cpp` | Demo animada paso a paso (~45-50s) |
+| 3. Casos + integración | Benjamin Toro | `demo_cases.cpp`, `main.cpp`, `render_bfs01.py` | Caso borde + complejidad + créditos (~35s) |
 
 ---
 
